@@ -1,0 +1,122 @@
+    public String[] getClusters() {
+        for (int i = 0; i < scores.length; i++) {
+            Instance a = new SparseInstance(2);
+            a.put(0, scores[i]);
+            data.add(a);
+        }
+        result = km.cluster(data);
+        r = new String[result.length];
+        double sc = ce.score(result);
+        System.out.println(sc);
+        for (int i = 0; i < r.length; i++) {
+            r[i] = result[i].toString();
+            r[i] = r[i].replace("[", "");
+            r[i] = r[i].replace("]", "");
+            r[i] = r[i].replace("}", "");
+            r[i] = r[i].replace("{", "");
+            r[i] = r[i].replace("=", "");
+            r[i] = r[i].replace(";", "");
+            r[i] = r[i].replace("null", "");
+            r[i] = r[i].replace(" ", "");
+            r[i] = r[i].replace("00.", "0.");
+        }
+
+        delim = r[0].split(",");
+        cluster1 = new double[delim.length];
+        for (int i = 0; i < cluster1.length; i++) {
+            cluster1[i] = Double.parseDouble(delim[i]);
+        }
+        delim = r[1].split(",");
+        cluster2 = new double[delim.length];
+        for (int i = 0; i < cluster2.length; i++) {
+            cluster2[i] = Double.parseDouble(delim[i]);
+        }
+        delim = r[2].split(",");
+        cluster3 = new double[delim.length];
+        for (int i = 0; i < cluster3.length; i++) {
+            cluster3[i] = Double.parseDouble(delim[i]);
+        }
+        delim = r[3].split(",");
+        cluster4 = new double[delim.length];
+        for (int i = 0; i < cluster4.length; i++) {
+            cluster4[i] = Double.parseDouble(delim[i]);
+        }
+
+
+        double highestInCluster = 0.0;
+
+        for (int i = 0; i < 1 ; i++) {
+
+            for (int j = 0; j < cluster1.length; j++) {
+                if(cluster1[j] > highestInCluster) {
+                    highestInCluster = cluster1[j];
+                }
+            }
+
+            difference[i] = highestInCluster - score;
+            highestInCluster = 0.0;
+
+            for (int k = 0; k < cluster2.length; k++) {
+                if(cluster2[k] > highestInCluster){
+                    highestInCluster = cluster2[k];
+                }
+            }
+            difference[i+1] = highestInCluster - score;
+            highestInCluster = 0.0;
+
+            for (int j = 0; j < cluster3.length; j++) {
+                if(cluster3[j] > highestInCluster){
+                    highestInCluster = cluster3[j];
+                }
+            }
+            difference[i+2] = highestInCluster - score;
+            highestInCluster = 0.0;
+            for (int j = 0; j < cluster4.length ; j++){
+                if(cluster4[j] > highestInCluster){
+                    highestInCluster = cluster4[j];
+                }
+            }
+            difference[i+3] = highestInCluster - score;
+            highestInCluster = 0.0;
+        }
+        double least = 0.0;
+        int select = 0;
+        for (int i = 0; i < difference.length ; i++) {
+            if(difference[i] < least){
+                least = difference[i];
+                select = i;
+            }
+        }
+        String[] siteNames2;
+        System.out.println(select);
+        if(select == 0) {
+            siteNames2 = new String[cluster1.length];
+            for (int i = 0; i < siteNames2.length ; i++) {
+                siteNames2[i] = siteMap.get(cluster1[i]);
+            }
+            return siteNames2;
+        }
+        else if(select == 1){
+            siteNames2 = new String[cluster2.length];
+            for (int i = 0; i < siteNames2.length ; i++) {
+                siteNames2[i] = siteMap.get(cluster2[i]);
+            }
+            return siteNames2;
+        }
+        else if(select == 2){
+            siteNames2 = new String[cluster3.length];
+            for (int i = 0; i < siteNames2.length ; i++) {
+                siteNames2[i] = siteMap.get(cluster3[i]);
+            }
+            return siteNames2;
+        }
+
+        else{
+            siteNames2 = new String[cluster4.length];
+            for (int i = 0; i < siteNames2.length ; i++) {
+                siteNames2[i] = siteMap.get(cluster4[i]);
+            }
+            return siteNames2;
+        }
+
+    }
